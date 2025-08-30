@@ -31,10 +31,19 @@ jobs:
             context: ./frontend/
             push: true
             tags: ${{ secrets.DOCKER_USER }}/docker-project-frontend:latest
-        - name: Trivy backend check
+        - name: Trivy backend checking
           uses: aquasecurity/trivy-action@master
           with:
              image-ref: ${{ secrets.DOCKER_USER }}/docker-project-backend:latest
+             severity: 'CRITICAL'
+             vuln-type: 'os,library'
+             ignore-unfixed: true
+             format: 'table'
+             exit-code: '1'
+        - name: Trivy frontend checking
+          uses: aquasecurity/trivy-action@master
+          with:
+             image-ref: ${{ secrets.DOCKER_USER }}/docker-project-frontend:latest
              severity: 'CRITICAL'
              vuln-type: 'os,library'
              ignore-unfixed: true
