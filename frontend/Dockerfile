@@ -11,7 +11,9 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN npm run build -- --base=/momo-store/
+ENV VUE_APP_API_URL=/api
+
+RUN npm run build
 
 # =========================================
 # Stage 2: Prepare Nginx to Serve Static Files
