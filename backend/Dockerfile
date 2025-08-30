@@ -1,6 +1,6 @@
 FROM golang:alpine3.22 as builder
-ARG CGO_ENABLED=0
-ARG GOOS=linux
+ARG CGO_ENABLED
+ARG GOOS
 
 WORKDIR /app
 
@@ -13,13 +13,13 @@ RUN CGO_ENABLED=$CGO_ENABLED GOOS=$GOOS go build -o main ./cmd/api
 
 FROM alpine:3.22.1
 
-RUN groupadd -g 1000 gouser && \
-    useradd -r -u 1000 -g gouser gouser
+RUN addgroup -g 1000 gouser && \
+    adduser -D -u 1000 -G gouser gouser
 RUN apk add --no-cache  curl
     
 WORKDIR /app
 COPY --from=builder /app/main .
-USER gouser
+USER gouser:gouser
 
 EXPOSE 8081
 
