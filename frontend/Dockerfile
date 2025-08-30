@@ -1,7 +1,7 @@
 # =========================================
 # Stage 1: Build the Vue.js Application
 # =========================================
-ARG NODE_VERSION=lts-alpine
+ARG NODE_VERSION=22.19.0-alpine3.22
 ARG NGINX_VERSION=alpine3.21
 
 # Use a lightweight Node.js image for building (customizable via ARG)
@@ -16,13 +16,14 @@ COPY package*.json ./
 # Install project dependencies using npm ci (ensures a clean, reproducible install)
 RUN --mount=type=cache,target=/root/.npm npm ci
 
-RUN npm ci
-
 # Copy the rest of the application source code into the container
 COPY . .
 ENV NODE_OPTIONS=--openssl-legacy-provider
 # Build the Vue.js application
 RUN npm run build
+
+# Проверка: посмотреть, что dist создалась
+RUN ls -la /app/dist
 
 # =========================================
 # Stage 2: Prepare Nginx to Serve Static Files
@@ -36,7 +37,8 @@ USER nginx
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-
+#WORKDIR /app
+#COPY . .
 # Copy the static build output from the build stage to Nginx's default HTML serving directory
 COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
 
