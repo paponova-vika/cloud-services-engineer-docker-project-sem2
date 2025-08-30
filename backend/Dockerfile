@@ -14,8 +14,8 @@ RUN CGO_ENABLED=$CGO_ENABLED GOOS=$GOOS go build -o main ./cmd/api
 FROM alpine:3.22.1
 
 RUN groupadd -g 1000 gouser && \
-    useradd -r -u 1000 -g gouser gouser \
-RUN apk add --no-cache  curl \
+    useradd -r -u 1000 -g gouser gouser
+RUN apk add --no-cache  curl
     
 WORKDIR /app
 COPY --from=builder /app/main .
