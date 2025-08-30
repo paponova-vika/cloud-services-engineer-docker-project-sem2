@@ -4,4 +4,18 @@ services:
     ports:
       - "8080:8081"
     volumes:
-      - /app
+      - backend-data:/app
+    environment:
+      CGO_ENABLED: "0"
+      GOOS: "linux"
+    restart: always
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  backend-data:
